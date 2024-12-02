@@ -1,35 +1,87 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import { type Question, questions } from "./questions";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [i, setI] = useState(0);
+  const [incorrect, setIncorrect] = useState(0);
+
+  const question = (questions[i] as Question | undefined) || null;
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!question) {
+      alert("Quiz completed!");
+      return;
+    }
+
+    const form = event.target as HTMLFormElement;
+    const answer = (form.elements.namedItem(question.question) as RadioNodeList)
+      .value;
+    if (answer === question.answer) {
+      alert("Correct!");
+    } else {
+      setIncorrect((i) => i + 1);
+      alert("Incorrect!, The correct answer is " + question.answer);
+    }
+    setI((i) => i + 1);
+  }
+
+  if (!question) {
+    return (
+      <div style={{ margin: "auto", textAlign: "center" }}>
+        <h3>Entrepreneurship Quiz</h3>
+        <p>Quiz completed!</p>
+        <p>Incorrect answers: {incorrect}</p>
+        <p>Total questions: {questions.length}</p>
+        <button
+          onClick={() => {
+            setI(0);
+            setIncorrect(0);
+          }}
+        >
+          Restart
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <div style={{ paddingBottom: "4px" }}>
+        <h3>Entrepreneurship Quiz</h3>
+        Question {i + 1}/{questions.length}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div style={{ margin: "auto", textAlign: "center" }}>
+        <p></p>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <h2>{question.question}</h2>
+            <div style={{ textAlign: "left" }}>
+              {question.choices.map((choice, index) => (
+                <div
+                  key={index}
+                  style={{
+                    fontSize: "1.5em",
+                    padding: "2px",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    id={choice}
+                    name={question.question}
+                    value={choice}
+                  />
+                  <label htmlFor={choice}>{choice}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
