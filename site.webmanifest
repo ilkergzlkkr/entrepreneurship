@@ -6,7 +6,7 @@
   "theme_color": "#242424",
   "background_color": "#242424",
   "display": "standalone",
-  "start_url": "/entrepreneur",
+  "start_url": "/entrepreneurship",
   "orientation": "any",
   "prefer_related_applications": false
 }
