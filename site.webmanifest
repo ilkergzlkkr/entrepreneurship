@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Entrepreneur Quiz",
+  "short_name": "Entrepreneur Quiz",
+  "icons": [],
+  "theme_color": "#242424",
+  "background_color": "#242424",
+  "display": "standalone",
+  "start_url": "/",
+  "orientation": "any",
+  "prefer_related_applications": false
+}
