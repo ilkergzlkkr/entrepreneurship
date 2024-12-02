@@ -5,13 +5,20 @@ import { type Question, questions } from "./questions";
 function App() {
   const [i, setI] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
+  const [peekPrev, setPeekPrev] = useState(false);
 
-  const question = (questions[i] as Question | undefined) || null;
+  const question =
+    (questions[peekPrev ? i - 1 : i] as Question | undefined) || null;
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!question) {
       alert("Quiz completed!");
+      return;
+    }
+
+    if (peekPrev) {
+      setPeekPrev(false);
       return;
     }
 
@@ -39,7 +46,12 @@ function App() {
 
       const form = document.getElementsByTagName("form")[0];
       const key = event.key.toUpperCase();
-      if (key === "A" || key === "B" || key === "C" || key === "D") {
+      if (
+        (!peekPrev && key === "A") ||
+        key === "B" ||
+        key === "C" ||
+        key === "D"
+      ) {
         if (form) {
           const answer = form.elements.namedItem(
             question.question
@@ -61,7 +73,7 @@ function App() {
 
     document.addEventListener("keypress", handleKeyPress);
     return () => document.removeEventListener("keypress", handleKeyPress);
-  }, [question]);
+  }, [peekPrev, question]);
 
   if (!question) {
     return (
@@ -74,6 +86,7 @@ function App() {
           onClick={() => {
             setI(0);
             setIncorrect(0);
+            setPeekPrev(false);
           }}
         >
           Restart
@@ -86,7 +99,7 @@ function App() {
     <div>
       <div style={{ paddingBottom: "4px" }}>
         <h3>Entrepreneurship Quiz</h3>
-        Question {i + 1}/{questions.length}
+        Question {peekPrev ? i : i + 1}/{questions.length}
       </div>
       <div style={{ margin: "auto", textAlign: "center" }}>
         <p></p>
@@ -107,13 +120,51 @@ function App() {
                     id={choice}
                     name={question.question}
                     value={choice}
+                    disabled={peekPrev}
                   />
-                  <label htmlFor={choice}>{choice}</label>
+                  <label
+                    htmlFor={choice}
+                    style={
+                      peekPrev && choice.startsWith(question.answer)
+                        ? {
+                            outline: "4px solid green",
+                            padding: "5px",
+                            borderRadius: "5px",
+                          }
+                        : {}
+                    }
+                  >
+                    {choice}
+                  </label>
                 </div>
               ))}
             </div>
           </div>
-          <button type="submit">Submit</button>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "10px",
+              marginTop: "10px",
+            }}
+          >
+            <button type="submit">
+              {peekPrev
+                ? "OK"
+                : i === questions.length - 1
+                ? "Finish"
+                : "Submit"}
+            </button>
+            {!peekPrev && (
+              <button
+                type="button"
+                disabled={i === 0}
+                onClick={() => setPeekPrev(true)}
+              >
+                Peek Previous
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </div>
