@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { type Question, questions } from "./questions";
+import toast from "react-hot-toast";
 
 function App() {
   const [i, setI] = useState(0);
@@ -13,7 +14,7 @@ function App() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!question) {
-      alert("Quiz completed!");
+      toast.success("Quiz completed!");
       return;
     }
 
@@ -27,10 +28,10 @@ function App() {
       .value;
 
     if (answer.startsWith(question.answer)) {
-      alert("Correct!");
+      toast.success("Correct!");
     } else {
       setIncorrect((i) => i + 1);
-      alert("Incorrect!, The correct answer is " + question.answer);
+      toast.error("Incorrect!, The correct answer is " + question.answer);
     }
     setI((i) => i + 1);
   }
