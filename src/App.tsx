@@ -16,9 +16,11 @@ function App() {
     }
 
     const form = event.target as HTMLFormElement;
-    const answer = (form.elements.namedItem(question.question) as RadioNodeList)
-      .value;
-    if (answer === question.answer) {
+    const answer = (
+      form.elements.namedItem(question.question) as HTMLInputElement
+    ).value;
+
+    if (answer.startsWith(question.answer)) {
       alert("Correct!");
     } else {
       setIncorrect((i) => i + 1);
@@ -54,7 +56,7 @@ function App() {
       </div>
       <div style={{ margin: "auto", textAlign: "center" }}>
         <p></p>
-        <form onSubmit={handleSubmit}>
+        <form key={i} onSubmit={handleSubmit}>
           <div>
             <h2>{question.question}</h2>
             <div style={{ textAlign: "left" }}>
