@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { type Question, questions } from "./questions";
 
@@ -16,9 +16,8 @@ function App() {
     }
 
     const form = event.target as HTMLFormElement;
-    const answer = (
-      form.elements.namedItem(question.question) as HTMLInputElement
-    ).value;
+    const answer = (form.elements.namedItem(question.question) as RadioNodeList)
+      .value;
 
     if (answer.startsWith(question.answer)) {
       alert("Correct!");
@@ -28,6 +27,41 @@ function App() {
     }
     setI((i) => i + 1);
   }
+
+  // listen key press events on A, B, C, D
+  // if key press event is detected, submit the form
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (!question) {
+        return;
+      }
+
+      const form = document.getElementsByTagName("form")[0];
+      const key = event.key.toUpperCase();
+      if (key === "A" || key === "B" || key === "C" || key === "D") {
+        if (form) {
+          const answer = form.elements.namedItem(
+            question.question
+          ) as RadioNodeList;
+
+          if (answer) {
+            (answer[parseInt(key, 36) - 10] as HTMLElement).click();
+          }
+        }
+      }
+
+      if (key === "ENTER" && form) {
+        const button = form.getElementsByTagName("button")[0];
+        if (button) {
+          button.click();
+        }
+      }
+    };
+
+    document.addEventListener("keypress", handleKeyPress);
+    return () => document.removeEventListener("keypress", handleKeyPress);
+  }, [question]);
 
   if (!question) {
     return (
